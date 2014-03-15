@@ -14,9 +14,12 @@ object TopK {
     
     val items = input.map(toItem)
     val itemsById = items.groupBy(_.categoryId)
-
+    
     val topItems = itemsById.sortedTake(2)(Ordering.by(_.score))
-    topItems.saveAsTextFile(args(1))    
+    
+    topItems
+      .map { case(ind, seq) => s"$ind -> ${seq.mkString}"  }
+      .saveAsTextFile(args(1))        
   }
 
   def toItem(s: String): Item = {

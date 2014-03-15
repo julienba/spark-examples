@@ -32,9 +32,9 @@ class TopKSpec extends Specification {
       
       val outputFile = new File(outputDir, "part-00000")
       val actual = Source.fromFile(outputFile).mkString
-      //println("ACTUAL: " + actual)
-      actual must contain("(2,List(Item(2,2,d)))")
-      actual must contain("(1,List(Item(1,1,b), Item(2,1,a)))")
+      println("ACTUAL: " + actual)
+      actual must contain("2 -> Item(2,2,d)")
+      actual must contain("1 -> Item(1,1,b)Item(2,1,a)")
     }
   }
 }
