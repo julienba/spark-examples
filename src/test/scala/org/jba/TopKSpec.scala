@@ -5,36 +5,39 @@ import scala.io.Source
 import com.google.common.io.Files
 import org.specs2.mutable.Specification
 
+
 class TopKSpec extends Specification {
+  def strItem(i: Item) = s"${i.score}\t${i.categoryId}\t${i.content}\n"
   
   "A TopK job" should {
-
-    def strItem(i: Item) = s"${i.score}\t${i.categoryId}\t${i.content}\n"
     
     "find ordering result" in {
-
+      val dataset = ItemGenerator.genDS(100)
+      
+      val itemsById = dataset.groupBy(_.categoryId)
+      val topItemsById = itemsById.map { case(id,seq) => (id,seq.sorted(ItemOrdering).take(2))}
+      
       val tempDir = Files.createTempDir()
-      
-      val input = strItem(Item(2,1,"c"))
-      
       val inputFile = new File(tempDir, "input").getAbsolutePath
       val inWriter = new FileWriter(inputFile)
       
-      inWriter.write(strItem(Item(2,1,"a")))
-      inWriter.write(strItem(Item(1,1,"b")))
-      inWriter.write(strItem(Item(3,1,"c")))
-      inWriter.write(strItem(Item(2,2,"d")))
-      
+      dataset.foreach( x => inWriter.write(strItem(x)))
       inWriter.close
+      
       val outputDir = new File(tempDir, "output").getAbsolutePath
 
       TopK.apply("local", List(inputFile, outputDir))
       
       val outputFile = new File(outputDir, "part-00000")
       val actual = Source.fromFile(outputFile).mkString
-      println("ACTUAL: " + actual)
-      actual must contain("2 -> Item(2,2,d)")
-      actual must contain("1 -> Item(1,1,b)Item(2,1,a)")
-    }
+      //println("ACTUAL:\n" + actual)      
+      
+      
+      topItemsById must have size(Source.fromFile(outputFile).getLines.toList.size)
+      topItemsById.foreach(x => actual must contain(TopK.pp(x)))
+      
+      success
+    }    
+    
   }
 }

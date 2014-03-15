@@ -12,5 +12,6 @@ libraryDependencies ++= Seq(
 resolvers += "Akka Repository" at "http://repo.akka.io/releases/"
 
 libraryDependencies ++= Seq(
-  "org.specs2" %% "specs2" % "2.1.1" % "test"
+  "org.specs2" %% "specs2" % "2.1.1" % "test",
+  "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
 )
