@@ -31,7 +31,7 @@ object TopK {
       .saveAsTextFile(args(1))        
   }
 
-  def pp(x: (Int,List[Item])) = x match { 
+  def pp(x: (Int,List[Item])): String = x match { 
     case(ind,seq) => s"$ind -> ${seq.mkString}" 
   }
   

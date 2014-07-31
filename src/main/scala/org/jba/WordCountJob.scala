@@ -28,7 +28,7 @@ object WordCount {
       Monoid.sum(iter).toIterator
     }
      
-    result.saveAsTextFile(args(1))   
+    result.saveAsTextFile(args(1))    
   }
   
   
